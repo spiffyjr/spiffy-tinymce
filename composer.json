@@ -1,0 +1,25 @@
+{
+    "name": "spiffy/spiffy-tinymce",
+    "description": "ZF2 module for programmatic creation of TinyMCE.",
+    "homepage": "http://www.github.com/spiffyjr/spiffy-tinymce.git",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "mockery/mockery": "0.*",
+        "phpunit/phpunit": "3.*",
+        "spiffy/spiffy-test": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "SpiffyTinyMce": "src/",
+            "SpiffyTinyMce": "test/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
+        }
+    }
+}
+
