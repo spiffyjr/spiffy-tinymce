@@ -3,6 +3,7 @@
 namespace SpiffyTinyMce\View\Helper;
 
 use SpiffyTinyMce\Manager;
+use SpiffyTinyMce\ModuleOptions;
 use SpiffyTinyMce\TinyMce as Instance;
 use Zend\Json\Json;
 use Zend\View\Helper\AbstractHtmlElement;
@@ -10,16 +11,23 @@ use Zend\View\Helper\AbstractHtmlElement;
 class TinyMce extends AbstractHtmlElement
 {
     /**
-     * @var \SpiffyTinyMce\Manager
+     * @var Manager
      */
     protected $manager;
 
     /**
-     * @param Manager $manager
+     * @var ModuleOptions
      */
-    public function __construct(Manager $manager)
+    protected $options;
+
+    /**
+     * @param Manager $manager
+     * @param ModuleOptions $options
+     */
+    public function __construct(Manager $manager, ModuleOptions $options)
     {
         $this->manager = $manager;
+        $this->options = $options;
     }
 
     /**
@@ -48,11 +56,28 @@ class TinyMce extends AbstractHtmlElement
         return '<textarea ' . $this->htmlAttribs($attribs) . '></textarea>';
     }
 
-    public function injectJs($name)
+    public function renderOptionsJs($name)
+    {
+        /** @var \SpiffyTinyMce\TinyMce $tiny */
+        $tiny      = $this->manager->get($name);
+        $options   = $tiny->getOptions();
+        $useJquery = $tiny->getUseJquery() === true
+            || ($tiny->getUseJquery() === null && $this->options->getUseJquery());
+
+        if ($useJquery && !isset($options['script_url'])) {
+            $options['script_url'] = $this->options->getScriptUrl();
+        }
+
+        if (empty($options)) {
+            $options = (object) $options;
+        }
+
+        return Json::prettyPrint(json_encode($options), array('indent' => "    "));
+    }
+
+    public function renderJs($name)
     {
         $tiny     = $this->manager->get($name);
-        $options  = $tiny->getOptions();
-        $options  = Json::prettyPrint(json_encode($options), array('indent' => "    "));
         $selector = $tiny->getSelector();
 
         if (!$selector) {
@@ -61,10 +86,15 @@ class TinyMce extends AbstractHtmlElement
 
         $js = '';
         if ($tiny->getUseJquery()) {
-            $js = sprintf('$(function() { $("%s").tinymce(%s); });', $selector, $options);
+            $js = sprintf('$(function() { $("%s").tinymce(%s); });', $selector, $this->renderOptionsJs($name));
         }
 
-        $this->getView()->inlineScript()->appendScript($js);
+        return $js;
+    }
+
+    public function injectJs($name)
+    {
+        $this->getView()->inlineScript()->appendScript($this->renderJs($name));
     }
 
     /**

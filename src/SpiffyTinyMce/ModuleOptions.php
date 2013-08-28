@@ -14,6 +14,20 @@ class ModuleOptions extends AbstractOptions
     protected $manager = array();
 
     /**
+     * Whether or not to use jQuery by default. Each instance can override this setting.
+     *
+     * @var bool
+     */
+    protected $useJquery = false;
+
+    /**
+     * URL of the tiny mce script if useJquery is enabled in the TinyMCE instance.
+     *
+     * @var string
+     */
+    protected $scriptUrl = '/js/tinymce/tinymce.min.js';
+
+    /**
      * An array of instances to register with the tinymce manager. This is handled by the
      * SpiffyTinyMce\TinyMceAbstractFactory.
      *
@@ -55,5 +69,41 @@ class ModuleOptions extends AbstractOptions
     public function getInstances()
     {
         return $this->instances;
+    }
+
+    /**
+     * @param string $scriptUrl
+     * @return $this
+     */
+    public function setScriptUrl($scriptUrl)
+    {
+        $this->scriptUrl = $scriptUrl;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScriptUrl()
+    {
+        return $this->scriptUrl;
+    }
+
+    /**
+     * @param boolean $useJquery
+     * @return $this
+     */
+    public function setUseJquery($useJquery)
+    {
+        $this->useJquery = $useJquery;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseJquery()
+    {
+        return $this->useJquery;
     }
 }

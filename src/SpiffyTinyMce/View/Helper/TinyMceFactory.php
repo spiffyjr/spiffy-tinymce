@@ -19,6 +19,9 @@ class TinyMceFactory implements FactoryInterface
         /** @var \Zend\View\HelperPluginManager $serviceLocator */
         $sl = $serviceLocator->getServiceLocator();
 
-        return new TinyMce($sl->get('SpiffyTinyMce\Manager'));
+        return new TinyMce(
+            $sl->get('SpiffyTinyMce\Manager'),
+            $sl->get('SpiffyTinyMce\ModuleOptions')
+        );
     }
 }

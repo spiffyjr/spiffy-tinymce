@@ -12,9 +12,9 @@ class TinyMce extends AbstractOptions
     protected $name;
 
     /**
-     * @var bool
+     * @var null|bool
      */
-    protected $useJquery = false;
+    protected $useJquery = null;
 
     /**
      * @var string
